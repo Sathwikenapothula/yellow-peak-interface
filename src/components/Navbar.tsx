@@ -24,6 +24,11 @@ const Navbar = () => {
     };
   }, []);
 
+  // Function to close mobile menu when a link is clicked
+  const handleMobileLinkClick = () => {
+    setMobileMenuOpen(false);
+  };
+
   return (
     <motion.nav 
       initial={{ opacity: 0, y: -20 }}
@@ -111,22 +116,22 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="md:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Home</Link>
-            <Link to="/solutions" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Solutions</Link>
-            <a href="/#about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">About</a>
-            <a href="/#contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Contact</a>
+            <Link to="/" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Home</Link>
+            <Link to="/solutions" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Solutions</Link>
+            <a href="/#about" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">About</a>
+            <a href="/#contact" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Contact</a>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="grid grid-cols-2 gap-4 px-4">
               <div className="space-y-2">
                 <p className="text-sm font-medium text-gray-500">Clients</p>
-                <Link to="/user-login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
-                <Link to="/user-signup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
+                <Link to="/user-login" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
+                <Link to="/user-signup" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
               </div>
               <div className="space-y-2">
                 <p className="text-sm font-medium text-gray-500">Agents</p>
-                <Link to="/agent-login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
-                <Link to="/agent-signup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
+                <Link to="/agent-login" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
+                <Link to="/agent-signup" onClick={handleMobileLinkClick} className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
               </div>
             </div>
           </div>
