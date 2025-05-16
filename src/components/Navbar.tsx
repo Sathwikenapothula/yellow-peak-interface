@@ -1,14 +1,38 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <motion.nav 
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className={`sticky top-0 z-50 transition-all duration-200 ${
+        scrolled ? "bg-white shadow-md" : "bg-white/95 shadow-sm"
+      }`}
+    >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 justify-between items-center">
           <div className="flex items-center">
@@ -26,27 +50,40 @@ const Navbar = () => {
               <button className="flex items-center text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
                 Solutions <ChevronDown className="ml-1 h-4 w-4" />
               </button>
-              <div className="absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <Link to="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Investment Planning</Link>
-                <Link to="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Wealth Management</Link>
-                <Link to="/" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Retirement</Link>
+              <div className="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                <Link to="/solutions" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">All Solutions</Link>
+                <Link to="/solutions" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Business Solutions</Link>
+                <Link to="/solutions" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">IT Solutions</Link>
+                <Link to="/solutions" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Products</Link>
               </div>
             </div>
-            <Link to="/" className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
+            <a href="/#about" className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
               About
-            </Link>
-            <Link to="/" className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
+            </a>
+            <a href="/#contact" className="text-gray-700 hover:text-primary px-3 py-2 text-sm font-medium transition-colors">
               Contact
-            </Link>
+            </a>
           </div>
 
           <div className="hidden md:flex md:items-center md:space-x-3">
-            <Link to="/user-login">
-              <Button variant="outline">Client Login</Button>
-            </Link>
-            <Link to="/agent-login">
-              <Button>Agent Login</Button>
-            </Link>
+            <div className="relative group">
+              <Button variant="outline" className="flex items-center gap-1">
+                Client Area <ChevronDown className="h-4 w-4" />
+              </Button>
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <Link to="/user-login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</Link>
+                <Link to="/user-signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Create Account</Link>
+              </div>
+            </div>
+            <div className="relative group">
+              <Button className="flex items-center gap-1">
+                Agent Portal <ChevronDown className="h-4 w-4" />
+              </Button>
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
+                <Link to="/agent-login" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Login</Link>
+                <Link to="/agent-signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Create Account</Link>
+              </div>
+            </div>
           </div>
           
           {/* Mobile menu button */}
@@ -75,23 +112,27 @@ const Navbar = () => {
         <div className="md:hidden bg-white shadow-lg">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Home</Link>
-            <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Solutions</Link>
-            <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">About</Link>
-            <Link to="/" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Contact</Link>
+            <Link to="/solutions" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Solutions</Link>
+            <a href="/#about" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">About</a>
+            <a href="/#contact" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Contact</a>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="flex items-center px-4 space-x-2">
-              <Link to="/user-login" className="w-full">
-                <Button variant="outline" className="w-full justify-center">Client Login</Button>
-              </Link>
-              <Link to="/agent-login" className="w-full">
-                <Button className="w-full justify-center">Agent Login</Button>
-              </Link>
+            <div className="grid grid-cols-2 gap-4 px-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Clients</p>
+                <Link to="/user-login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
+                <Link to="/user-signup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
+              </div>
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-gray-500">Agents</p>
+                <Link to="/agent-login" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Login</Link>
+                <Link to="/agent-signup" className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-primary hover:bg-gray-50 rounded-md">Sign Up</Link>
+              </div>
             </div>
           </div>
         </div>
       )}
-    </nav>
+    </motion.nav>
   );
 };
 

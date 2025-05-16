@@ -5,63 +5,103 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { motion } from "framer-motion";
+import { 
+  Form, 
+  FormControl, 
+  FormField, 
+  FormItem, 
+  FormLabel, 
+  FormMessage 
+} from "@/components/ui/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { MapPin, Phone, Mail, Clock } from "lucide-react";
+
+const formSchema = z.object({
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email({ message: "Please enter a valid email address." }),
+  phone: z.string().min(10, { message: "Please enter a valid phone number." }),
+  subject: z.string().min(1, { message: "Please select a subject." }),
+  message: z.string().min(10, { message: "Message must be at least 10 characters." }),
+});
+
+const fadeIn = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+};
 
 const ContactSection = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    message: ""
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Message Sent",
-      description: "Thank you for contacting Yellow Mountain. We'll be in touch soon!",
-      duration: 5000,
-    });
-    
-    // Reset form
-    setFormData({
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
       name: "",
       email: "",
       phone: "",
+      subject: "",
       message: ""
-    });
-  };
+    },
+  });
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    setIsLoading(true);
+
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      toast({
+        title: "Enquiry Submitted",
+        description: "Thank you for contacting Yellow Mountain. We'll be in touch with you shortly!",
+        duration: 5000,
+      });
+      form.reset();
+    }, 1500);
+  }
 
   return (
-    <div className="py-24 bg-white" id="contact">
+    <div className="py-24 bg-gradient-to-b from-white to-gray-50" id="contact">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="lg:text-center mb-12">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeIn}
+          className="lg:text-center mb-16"
+        >
           <h2 className="text-base text-primary font-semibold tracking-wide uppercase">Contact Us</h2>
-          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">
+          <p className="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl md:text-5xl">
             Get In Touch
           </p>
           <p className="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">
-            Have questions? Our team is here to help you with any inquiries.
+            Have questions? Our team is here to help you with any inquiries about our investment solutions and services.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-2">
-          <div className="bg-gray-50 p-10 rounded-lg">
-            <h3 className="text-2xl font-bold mb-6 text-gray-900">Contact Information</h3>
-            <div className="space-y-6">
+          <motion.div 
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            variants={fadeIn}
+            className="bg-gradient-to-br from-gray-50 to-gray-100 p-10 rounded-lg shadow-md"
+          >
+            <h3 className="text-2xl font-bold mb-8 text-gray-900">Contact Information</h3>
+            <div className="space-y-8">
               <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                  </svg>
+                <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+                  <MapPin className="h-6 w-6 text-primary" />
                 </div>
                 <div className="ml-4">
                   <p className="text-lg font-medium text-gray-900">Our Office</p>
@@ -70,96 +110,174 @@ const ContactSection = () => {
               </div>
 
               <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                  </svg>
+                <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+                  <Phone className="h-6 w-6 text-primary" />
                 </div>
                 <div className="ml-4">
                   <p className="text-lg font-medium text-gray-900">Phone</p>
                   <p className="mt-1 text-gray-600">+1 (555) 123-4567</p>
+                  <p className="mt-1 text-gray-500">Toll-free: 1-800-YM-INVEST</p>
                 </div>
               </div>
 
               <div className="flex items-start">
-                <div className="flex-shrink-0">
-                  <svg className="h-6 w-6 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
+                <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+                  <Mail className="h-6 w-6 text-primary" />
                 </div>
                 <div className="ml-4">
                   <p className="text-lg font-medium text-gray-900">Email</p>
                   <p className="mt-1 text-gray-600">contact@yellowmountain.com</p>
+                  <p className="mt-1 text-gray-500">support@yellowmountain.com</p>
                 </div>
               </div>
             </div>
 
             <div className="mt-12">
-              <h3 className="text-xl font-medium mb-4 text-gray-900">Business Hours</h3>
-              <ul className="space-y-2">
-                <li className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</li>
-                <li className="text-gray-600">Saturday: 10:00 AM - 2:00 PM</li>
-                <li className="text-gray-600">Sunday: Closed</li>
-              </ul>
+              <div className="flex items-start">
+                <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full">
+                  <Clock className="h-6 w-6 text-primary" />
+                </div>
+                <div className="ml-4">
+                  <h3 className="text-lg font-medium text-gray-900">Business Hours</h3>
+                  <ul className="space-y-2 mt-2">
+                    <li className="text-gray-600">Monday - Friday: 9:00 AM - 6:00 PM</li>
+                    <li className="text-gray-600">Saturday: 10:00 AM - 2:00 PM</li>
+                    <li className="text-gray-600">Sunday: Closed</li>
+                  </ul>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <Card className="shadow-lg border-0">
-            <div className="p-10">
-              <h3 className="text-2xl font-bold mb-6 text-gray-900">Send Us a Message</h3>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Your name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Your email address"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
-                  <Input
-                    id="phone"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="Your phone number"
-                    required
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="How can we help you?"
-                    rows={4}
-                    required
-                  />
-                </div>
-                <div>
-                  <Button type="submit" className="w-full">Submit</Button>
-                </div>
-              </form>
+            <div className="mt-12">
+              <iframe
+                title="Yellow Mountain Location"
+                className="w-full h-64 rounded-lg shadow-sm"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3024.2219901290355!2d-74.00701368400567!3d40.71774937933185!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a23e28c1191%3A0x49f75d3281df052a!2sWall%20St%2C%20New%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2ssa!4v1653395535800!5m2!1sen!2ssa"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
-          </Card>
+          </motion.div>
+
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={fadeIn}
+          >
+            <Card className="shadow-lg border-0">
+              <div className="p-10">
+                <h3 className="text-2xl font-bold mb-6 text-gray-900">Send an Enquiry</h3>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <FormField
+                      control={form.control}
+                      name="name"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Full Name</FormLabel>
+                          <FormControl>
+                            <Input placeholder="John Doe" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Email</FormLabel>
+                            <FormControl>
+                              <Input type="email" placeholder="your@email.com" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="phone"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Phone Number</FormLabel>
+                            <FormControl>
+                              <Input placeholder="(555) 123-4567" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="subject"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Subject</FormLabel>
+                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Select a subject" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="general">General Inquiry</SelectItem>
+                              <SelectItem value="business">Business Solutions</SelectItem>
+                              <SelectItem value="it">IT Solutions</SelectItem>
+                              <SelectItem value="products">Products</SelectItem>
+                              <SelectItem value="support">Technical Support</SelectItem>
+                              <SelectItem value="other">Other</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <FormField
+                      control={form.control}
+                      name="message"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Message</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              placeholder="How can we help you?"
+                              className="min-h-[120px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <div>
+                      <Button 
+                        type="submit" 
+                        className="w-full"
+                        disabled={isLoading}
+                      >
+                        {isLoading ? "Submitting..." : "Submit Enquiry"}
+                      </Button>
+                      <p className="text-xs text-gray-500 mt-2 text-center">
+                        We'll get back to you within 24 business hours
+                      </p>
+                    </div>
+                  </form>
+                </Form>
+              </div>
+            </Card>
+          </motion.div>
         </div>
       </div>
     </div>
