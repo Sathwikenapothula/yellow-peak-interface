@@ -1,40 +1,25 @@
 
-import { Toaster } from "./components/ui/toaster";
-import { Toaster as Sonner } from "./components/ui/sonner";
-import { TooltipProvider } from "./components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import AgentLogin from "./pages/auth/AgentLogin";
-import AgentSignup from "./pages/auth/AgentSignup";
-import UserLogin from "./pages/auth/UserLogin";
-import UserSignup from "./pages/auth/UserSignup";
-import Solutions from "./pages/Solutions";
-import NotFound from "./pages/NotFound";
-import { AuthProvider } from "./context/AuthContext";
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import Home from './pages/Home';
+import Services from './pages/Services';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import NotFound from './pages/NotFound';
+import MainLayout from './components/layouts/MainLayout';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/agent-login" element={<AgentLogin />} />
-            <Route path="/agent-signup" element={<AgentSignup />} />
-            <Route path="/user-login" element={<UserLogin />} />
-            <Route path="/user-signup" element={<UserSignup />} />
-            <Route path="/solutions" element={<Solutions />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout><Home /></MainLayout>} />
+        <Route path="/services" element={<MainLayout><Services /></MainLayout>} />
+        <Route path="/about" element={<MainLayout><About /></MainLayout>} />
+        <Route path="/contact" element={<MainLayout><Contact /></MainLayout>} />
+        <Route path="*" element={<MainLayout><NotFound /></MainLayout>} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
 export default App;
